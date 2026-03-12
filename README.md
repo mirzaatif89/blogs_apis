@@ -19,6 +19,7 @@ Quick Start
 -----------
 1) Clone & enter project  
    - `git clone <repo> && cd blogapi`
+   - Switch to the working branch (example): `git switch dependencies_added` then `git pull`
 2) Create/activate venv  
    - Windows: `python -m venv .venv && .venv\Scripts\activate`  
    - macOS/Linux: `python -m venv .venv && source .venv/bin/activate`
