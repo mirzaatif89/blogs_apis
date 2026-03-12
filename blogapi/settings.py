@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--l@!_ltlan5z+-pa5_yaj=0j^abkv#mkj&4yv$!dq#g$-ou71s'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h.strip() for h in config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',') if h.strip()]
 
 
 # Application definition
@@ -78,12 +79,26 @@ WSGI_APPLICATION = 'blogapi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+default_db_engine = config('DB_ENGINE', default='django.db.backends.sqlite3')
+default_db_name = config('DB_NAME', default=str(BASE_DIR / 'db.sqlite3'))
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': default_db_engine,
+        'NAME': default_db_name,
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default=''),
+        'PORT': config('DB_PORT', default=''),
     }
 }
+
+# If using SQLite, ensure NAME is a proper path relative to BASE_DIR when not absolute
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    db_name = DATABASES['default']['NAME']
+    DATABASES['default']['NAME'] = (
+        Path(db_name) if Path(db_name).is_absolute() else BASE_DIR / db_name
+    )
 
 
 # Password validation
