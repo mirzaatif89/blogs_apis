@@ -33,3 +33,11 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         return None
+
+
+class ContactSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255)
+    email = serializers.EmailField()
+    phone_number = serializers.CharField(max_length=50)
+    service = serializers.CharField(max_length=100)
+    message = serializers.CharField()

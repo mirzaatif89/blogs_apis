@@ -42,4 +42,14 @@ Key Endpoints
 - GET /blogs/<slug>/
 - Admin CRUD via /admin/blogs/ (also available under /api/ prefix)
 
+Email utility
+-------------
+- `blog.email_client.SMTPEmailClient` and the helper `blog.email_client.send_email` wrap `smtplib` and read all configuration from `.env`. Set `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS`, `EMAIL_USE_SSL`, `EMAIL_TIMEOUT`, and `DEFAULT_FROM_EMAIL`, then call `send_email(subject=..., body=..., to=...)` from any backend task when you need notifications.
+
+Contact notification API
+------------------------
+- POST `/contact/` with `full_name`, `email`, `phone_number`, `service`, and `message` (all strings). The view validates the payload, formats the fields into both plain text and an HTML table layout, and forwards it via `blog.email_client.send_email`. A successful call returns `202 Accepted`.
+- Configure `CONTACT_NOTIFICATION_EMAILS` (comma-separated) in `.env` so notifications land in the desired inboxes (defaults to `DEFAULT_FROM_EMAIL` when blank). If your frontend is on another domain, it can POST JSON to `http://127.0.0.1:8000/contact/` with `Content-Type: application/json`—CORS is already open (`CORS_ALLOW_ALL_ORIGINS = True`).
+
+
 More JSON shapes: see instruction.md.

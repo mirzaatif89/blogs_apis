@@ -159,3 +159,21 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email (SMTP) configuration powered by python-decouple-backed env vars.
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=10, cast=int)
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
+
+CONTACT_NOTIFICATION_EMAILS = [
+    email.strip()
+    for email in config('CONTACT_NOTIFICATION_EMAILS', default='').split(',')
+    if email.strip()
+]
+if not CONTACT_NOTIFICATION_EMAILS:
+    CONTACT_NOTIFICATION_EMAILS = [DEFAULT_FROM_EMAIL]
