@@ -38,9 +38,9 @@ Quick Start
 
 Key Endpoints
 -------------
-- GET /blogs/
-- GET /blogs/<slug>/
-- Admin CRUD via /admin/blogs/ (also available under /api/ prefix)
+- GET /api/blogs/
+- GET /api/blogs/<slug>/
+- Admin CRUD via /api/admin/blogs/
 
 Email utility
 -------------
@@ -48,8 +48,13 @@ Email utility
 
 Contact notification API
 ------------------------
-- POST `/contact/` with `full_name`, `email`, `phone_number`, `service`, and `message` (all strings). The view validates the payload, formats the fields into both plain text and an HTML table layout, and forwards it via `blog.email_client.send_email`. A successful call returns `202 Accepted`.
-- Configure `CONTACT_NOTIFICATION_EMAILS` (comma-separated) in `.env` so notifications land in the desired inboxes (defaults to `DEFAULT_FROM_EMAIL` when blank). If your frontend is on another domain, it can POST JSON to `http://127.0.0.1:8000/contact/` with `Content-Type: application/json`—CORS is already open (`CORS_ALLOW_ALL_ORIGINS = True`).
+- POST `/api/contact/` with `full_name`, `email`, `phone_number`, `service`, and `message` (all strings). The view validates the payload, formats the fields into both plain text and an HTML table layout, and forwards it via `blog.email_client.send_email`. A successful call returns `202 Accepted`.
+- Configure `CONTACT_NOTIFICATION_EMAILS` (comma-separated) in `.env` so notifications land in the desired inboxes (defaults to `DEFAULT_FROM_EMAIL` when blank). The frontend POSTs JSON to `http://127.0.0.1:8000/api/contact/` with `Content-Type: application/json`; CORS is already open (`CORS_ALLOW_ALL_ORIGINS = True`).
+
+Environment vars used for email
+------------------------------
+- `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS`, `EMAIL_USE_SSL`, `EMAIL_TIMEOUT`, `DEFAULT_FROM_EMAIL` drive the SMTP connection in `blog.email_client`.
+- `CONTACT_NOTIFICATION_EMAILS` is the comma-separated list of inboxes that receive the formatted contact information.
 
 
 More JSON shapes: see instruction.md.
